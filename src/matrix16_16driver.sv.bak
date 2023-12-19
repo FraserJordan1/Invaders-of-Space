@@ -1,0 +1,20 @@
+module matrix16_16driver (clk, GPIO_1, RedPixels, GrnPixels, EnableCount, clk, rst);
+    output logic [35:0] GPIO_1;
+    input logic [15:0][15:0] RedPixels ;
+    input logic [15:0][15:0] GrnPixels ;
+    input logic EnableCount, clk, rst;
+
+    logic [(FREQDIV + 3):0] Counter;
+    logic [3:0] RowSelect;
+    assign RowSelect = Counter[(FREQDIV + 3):FREQDIV];
+
+    always_ff @(posedge clk)
+    begin
+        if(rst) Counter <= 'b0;
+        if(EnableCount) Counter <= Counter + 1'b1;
+    end
+    
+    assign GPIO_1[35:32] = RowSelect;
+    assign GPIO_1[31:16] = { GrnPixels[RowSelect][0], GrnPixels[RowSelect][1], GrnPixels[RowSelect][2], GrnPixels[RowSelect][3], GrnPixels[RowSelect][4], GrnPixels[RowSelect][5], GrnPixels[RowSelect][6], GrnPixels[RowSelect][7], GrnPixels[RowSelect][8], GrnPixels[RowSelect][9], GrnPixels[RowSelect][10], GrnPixels[RowSelect][11], GrnPixels[RowSelect][12], GrnPixels[RowSelect][13], GrnPixels[RowSelect][14], GrnPixels[RowSelect][15] };
+    assign GPIO_1[15:0] = { RedPixels[RowSelect][0], RedPixels[RowSelect][1], RedPixels[RowSelect][2], RedPixels[RowSelect][3], RedPixels[RowSelect][4], RedPixels[RowSelect][5], RedPixels[RowSelect][6], RedPixels[RowSelect][7], RedPixels[RowSelect][8], RedPixels[RowSelect][9], RedPixels[RowSelect][10], RedPixels[RowSelect][11], RedPixels[RowSelect][12], RedPixels[RowSelect][13], RedPixels[RowSelect][14], RedPixels[RowSelect][15] };
+endmodule
